@@ -49,3 +49,38 @@ The following HTML code demonstrates how to integrate with the PayFast Onsite Pa
 </body>
 </html>
 ```
+
+### Adding support for Payfast's Web package
+To support the [Payfast's Web package](https://github.com/youngcet/payfast_web), you can amend the file as shown below:
+
+```html
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://www.payfast.co.za/onsite/engine.js"></script>
+</head>
+<body>
+    <script>
+            // DO NOT MODIFY THE CODE BELOW
+            
+            // retrieve the uuid that is passed to this file and send it to payfast onsite engine
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const uuid = urlParams.get('uuid');
+            const return_url = urlParams.get('return_url'); // -> add to support web
+            const cancel_url = urlParams.get('cancel_url'); // -> add to support web
+
+            window.payfast_do_onsite_payment({"uuid":uuid}, function (result) {
+                if (result === true) {
+                    // Payment Completed
+                    location.href = decodeURIComponent(return_url) || 'completed'; // triggers payment completed widget on app
+                }
+                else {
+                    // Payment Window Closed
+                    location.href = decodeURIComponent(cancel_url) || 'closed'; // triggers payment cancelled widget on app
+                }
+            });
+        </script>
+</body>
+</html>
+```
